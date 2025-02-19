@@ -19,7 +19,25 @@ class ChatController extends GetxController
   RxString image = "".obs;
   RxString userImage = "".obs;
 
+  RxList<ChatModal> selectedMessages = <ChatModal>[].obs; // Store selected messages
 
+
+
+  // Select/Deselect Messages
+  void toggleMessageSelection(ChatModal message) {
+    if (selectedMessages.contains(message)) {
+      selectedMessages.remove(message); // Deselect
+    } else {
+      selectedMessages.add(message); // Select
+    }
+    update(); // Refresh UI
+  }
+
+  // Clear Selections
+  void clearSelections() {
+    selectedMessages.clear();
+    update();
+  }
   // @override
   // void onInit() {
   //   // TODO: implement onInit

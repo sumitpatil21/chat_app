@@ -25,50 +25,39 @@ class SignupPage extends StatelessWidget {
           decoration: const BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: AssetImage('assets/images/chat.png'),
+              image: NetworkImage('https://source.unsplash.com/random/800x600/?chat,background'),
             ),
           ),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 70,
-                ),
+                const SizedBox(height: 70),
                 FadeInDown(
-                  child: Center(
-                    child: SizedBox(
-                      height: 110,
-                      width: 110,
-                      child: Image.asset(
-                          fit: BoxFit.cover,
-                          'assets/images/logo1-removebg-preview.png'),
+                  child: CircleAvatar(
+                    radius: 55,
+                    backgroundImage: NetworkImage(
+                        'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                FadeInDown(
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      letterSpacing: 1,
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                FadeInDown(
-                  child: const Center(
-                    child: Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 FadeInLeft(
                   child: MyTextField(
                       validator: (value) {
-                        if(value!.isEmpty)
-                          {
-                            return 'Value Must be required';
-                          }
+                        if (value!.isEmpty) {
+                          return 'Name is required';
+                        }
                       },
                       hint: 'Enter Name',
                       prefixIcon: Icons.person,
@@ -80,17 +69,8 @@ class SignupPage extends StatelessWidget {
                         if (value!.isEmpty) {
                           return 'Email is required';
                         }
-                        if (!value.contains('@gmail.com')) {
-                          return 'Must Be Enter @gmail.com';
-                        }
-                        if (value.contains(' ')) {
-                          return 'Do not enter the space';
-                        }
-                        if (RegExp(r'[A-Z]').hasMatch(value)) {
-                          return 'Entre the must be lowercase required';
-                        }
-                        if (value.toString() == '@gmail.com') {
-                          return 'example : abc@gmail.com';
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'Enter a valid email';
                         }
                       },
                       hint: 'Enter Email',
@@ -99,137 +79,105 @@ class SignupPage extends StatelessWidget {
                 ),
                 FadeInLeft(
                   child: Obx(
-                    () =>  MyTextField(
-                      password: controller.hidePassword.value,
+                        () => MyTextField(
+                        password: controller.hidePassword.value,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Password is required';
                           }
-                          if (!RegExp(r'[a-z]').hasMatch(value)) {
-                            return 'example Abc@1234';
-                          }
-                          if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                            return 'example Abc@1234';
-                          }
-                          if (!RegExp(r'\d').hasMatch(value)) {
-                            return 'example Abc@1234';
-                          }
-                          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-                            return 'example Abc@1234';
-                          }
                           if (value.length < 8) {
                             return 'Password must be at least 8 characters';
                           }
-                          return null;
                         },
                         hint: 'Enter Password',
                         sufixTap: () {
                           controller.passwordHide();
                         },
-                        sufixIcon: (controller.hidePassword.value) ? CupertinoIcons.eye_slash : Icons.remove_red_eye,
+                        sufixIcon: controller.hidePassword.value
+                            ? CupertinoIcons.eye_slash
+                            : Icons.remove_red_eye,
                         prefixIcon: Icons.lock_open,
                         controller: controller.txtPassword),
                   ),
                 ),
                 FadeInRight(
                   child: Obx(
-                    () =>  MyTextField(
-                      password: controller.hidePassword.value,
+                        () => MyTextField(
+                        password: controller.hidePassword.value,
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Password is required';
+                          if (value != controller.txtPassword.text) {
+                            return 'Passwords do not match';
                           }
-                          if (!RegExp(r'[a-z]').hasMatch(value)) {
-                            return 'example Abc@1234';
-                          }
-                          if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                            return 'example Abc@1234';
-                          }
-                          if (!RegExp(r'\d').hasMatch(value)) {
-                            return 'example Abc@1234';
-                          }
-                          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-                            return 'example Abc@1234';
-                          }
-                          if (value.length < 8) {
-                            return 'Password must be at least 8 characters';
-                          }
-                          return null;
                         },
+                        hint: 'Confirm Password',
                         sufixTap: () {
                           controller.passwordHide();
                         },
-                        hint: 'Confirm Password',
-                        sufixIcon: (controller.hidePassword.value) ? CupertinoIcons.eye_slash : Icons.remove_red_eye,
+                        sufixIcon: controller.hidePassword.value
+                            ? CupertinoIcons.eye_slash
+                            : Icons.remove_red_eye,
                         prefixIcon: Icons.lock_open,
                         controller: controller.txtConfirmPassword),
                   ),
                 ),
                 FadeInUp(
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10.0,
-                      right: 10,
-                      top: 8,
-                    ),
+                    padding: const EdgeInsets.all(16.0),
                     child: GestureDetector(
-                      onTap: () async{
-                        bool res = controller.signUpformkey.currentState!.validate();
-                        if(res)
-                          {
-                            if (controller.txtPassword.text ==
-                                controller.txtConfirmPassword.text) {
-                              try {
-                                await AuthServices.authServices.createAccountWithEmailAndPassword(
-                                  controller.txtEmail.text,
-                                  controller.txtPassword.text,
-                                );
-                                UserModal userModal = UserModal(
-                                 name:  controller.txtName.text,
-                                  image:  '',
-                                  email : controller.txtEmail.text,
-                                  token:  '',
-                                  isTyping: false,
-                                  isOnline: false,
-                                  timestamp: Timestamp.now(),
-                                );
-                  
-                                await FirebaseCloudService.firebaseCloudService
-                                    .insertUserIntoFireStore(userModal);
-                                controller.txtPassword.clear();
-                                controller.txtEmail.clear();
-                                controller.txtName.clear();
-                                controller.txtConfirmPassword.clear();
-                                controller.txtPhone.clear();
-                                Get.toNamed('/home');
-                              } catch (e) {
-                                Get.snackbar(
-                                  "Error",
-                                  e.toString(),
-                                  snackPosition: SnackPosition.BOTTOM,
-                                  backgroundColor: Colors.red,
-                                  colorText: Colors.white,
-                                );
-                              }
-                            } else {
-                              // Show error if passwords do not match
+                      onTap: () async {
+                        if (controller.signUpformkey.currentState!.validate()) {
+                          if (controller.txtPassword.text ==
+                              controller.txtConfirmPassword.text) {
+                            try {
+                              await AuthServices.authServices
+                                  .createAccountWithEmailAndPassword(
+                                controller.txtEmail.text,
+                                controller.txtPassword.text,
+                              );
+                              UserModal userModal = UserModal(
+                                name: controller.txtName.text,
+                                image: '',
+                                email: controller.txtEmail.text,
+                                token: '',
+                                isTyping: false,
+                                isOnline: false,
+                                timestamp: Timestamp.now(),
+                              );
+
+                              await FirebaseCloudService.firebaseCloudService
+                                  .insertUserIntoFireStore(userModal);
+                              controller.txtPassword.clear();
+                              controller.txtEmail.clear();
+                              controller.txtName.clear();
+                              controller.txtConfirmPassword.clear();
+                              Get.toNamed('/home');
+                            } catch (e) {
                               Get.snackbar(
-                                "Password Mismatch",
-                                "The passwords you entered do not match.",
+                                "Error",
+                                e.toString(),
                                 snackPosition: SnackPosition.BOTTOM,
                                 backgroundColor: Colors.red,
                                 colorText: Colors.white,
                               );
                             }
+                          } else {
+                            Get.snackbar(
+                              "Password Mismatch",
+                              "The passwords do not match.",
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                            );
                           }
+                        }
                       },
                       child: Container(
                         margin: EdgeInsets.only(top: 30),
                         height: 50,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Color(0xff888996)
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.blueAccent,
                         ),
                         alignment: Alignment.center,
                         child: const Text(
